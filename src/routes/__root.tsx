@@ -11,6 +11,7 @@ import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
 import appCss from '../styles.css?url'
 
 import type { QueryClient } from '@tanstack/react-query'
+import { TooltipProvider } from '#/components/ui/tooltip'
 
 interface MyRouterContext {
   queryClient: QueryClient
@@ -42,12 +43,14 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <head>
+    <html lang="en" suppressHydrationWarning >
+      <head suppressHydrationWarning>
         <HeadContent />
       </head>
-      <body>
-        {children}
+      <body suppressHydrationWarning>
+        <TooltipProvider>
+          {children}
+        </TooltipProvider>
         <TanStackDevtools
           config={{
             position: 'bottom-right',

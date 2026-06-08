@@ -9,7 +9,7 @@ import neon from './neon-vite-plugin.ts'
 
 const config = defineConfig({
   resolve: { tsconfigPaths: true },
-  plugins: [devtools(), neon, tailwindcss(), tanstackStart(), viteReact()],
+  plugins: [tanstackStart(), devtools(), neon, tailwindcss(), viteReact()],
 })
 
 export default config
