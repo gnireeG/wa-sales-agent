@@ -7,12 +7,19 @@ import { createFileRoute, Link } from '@tanstack/react-router'
 import { useForm } from '@tanstack/react-form'
 import { z } from 'zod'
 import { authClient } from '#/lib/auth-client'
+import { useState } from 'react'
+import { TriangleAlert } from 'lucide-react'
+import { Spinner } from '#/components/ui/spinner'
+import { Field } from '#/components/ui/field'
+import { Checkbox } from '#/components/ui/checkbox'
 
 export const Route = createFileRoute('/_auth/login')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
+
+  const [errorMsg, setErrorMsg] = useState('');
 
   const form = useForm({
     defaultValues: {
@@ -26,6 +33,13 @@ function RouteComponent() {
         password: value.password,
         rememberMe: value.rememberMe,
         callbackURL: '/admin'
+      }, {
+        onRequest: (ctx) => {
+          setErrorMsg('')
+        },
+        onError: (ctx) => {
+          setErrorMsg(ctx.error.message)
+        }
       })
     },
   })
@@ -105,11 +119,26 @@ function RouteComponent() {
                     )
                   }}
                 />
+                <form.Field
+                name="rememberMe"
+                children={(field) => {
+                  return (
+                    <Field orientation="horizontal">
+                      <Checkbox id="terms-checkbox" name="terms-checkbox" checked={field.state.value} onCheckedChange={(e) => field.handleChange(e === true)} />
+                      <Label htmlFor="terms-checkbox">Keep me signed in</Label>
+                    </Field>
+                  )
+                }}
+                />
               </div>
+              {errorMsg && errorMsg.length > 0 && (
+                <p className="text-sm text-destructive mt-4 flex gap-2 items-center flex-wrap"><TriangleAlert size={12} />{ errorMsg }</p>
+              )}
             </CardContent>
             <CardFooter className="flex-col gap-2 mt-8">
               <Button type="submit" className="w-full">
                 Login
+                { form.state.isSubmitting && <Spinner data-icon="inline-start" />}
               </Button>
               <Button variant="outline" className="w-full">
                 Login with Google

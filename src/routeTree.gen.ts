@@ -10,12 +10,14 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AdminRouteRouteImport } from './routes/admin/route'
+import { Route as FrontendRouteRouteImport } from './routes/_frontend/route'
 import { Route as AuthRouteRouteImport } from './routes/_auth/route'
-import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as FrontendIndexRouteImport } from './routes/_frontend/index'
 import { Route as AuthRegisterRouteImport } from './routes/_auth/register'
 import { Route as AuthLoginRouteImport } from './routes/_auth/login'
 import { Route as AdminSettingsIndexRouteImport } from './routes/admin/settings/index'
+import { Route as AdminCustomersIndexRouteImport } from './routes/admin/customers/index'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 
 const AdminRouteRoute = AdminRouteRouteImport.update({
@@ -23,19 +25,23 @@ const AdminRouteRoute = AdminRouteRouteImport.update({
   path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthRouteRoute = AuthRouteRouteImport.update({
-  id: '/_auth',
+const FrontendRouteRoute = FrontendRouteRouteImport.update({
+  id: '/_frontend',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const AuthRouteRoute = AuthRouteRouteImport.update({
+  id: '/_auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AdminRouteRoute,
+} as any)
+const FrontendIndexRoute = FrontendIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => FrontendRouteRoute,
 } as any)
 const AuthRegisterRoute = AuthRegisterRouteImport.update({
   id: '/register',
@@ -52,6 +58,11 @@ const AdminSettingsIndexRoute = AdminSettingsIndexRouteImport.update({
   path: '/settings/',
   getParentRoute: () => AdminRouteRoute,
 } as any)
+const AdminCustomersIndexRoute = AdminCustomersIndexRouteImport.update({
+  id: '/customers/',
+  path: '/customers/',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
@@ -59,31 +70,35 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
+  '/': typeof FrontendIndexRoute
   '/admin': typeof AdminRouteRouteWithChildren
   '/login': typeof AuthLoginRoute
   '/register': typeof AuthRegisterRoute
   '/admin/': typeof AdminIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/admin/customers/': typeof AdminCustomersIndexRoute
   '/admin/settings/': typeof AdminSettingsIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
+  '/': typeof FrontendIndexRoute
   '/login': typeof AuthLoginRoute
   '/register': typeof AuthRegisterRoute
   '/admin': typeof AdminIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/admin/customers': typeof AdminCustomersIndexRoute
   '/admin/settings': typeof AdminSettingsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
   '/_auth': typeof AuthRouteRouteWithChildren
+  '/_frontend': typeof FrontendRouteRouteWithChildren
   '/admin': typeof AdminRouteRouteWithChildren
   '/_auth/login': typeof AuthLoginRoute
   '/_auth/register': typeof AuthRegisterRoute
+  '/_frontend/': typeof FrontendIndexRoute
   '/admin/': typeof AdminIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/admin/customers/': typeof AdminCustomersIndexRoute
   '/admin/settings/': typeof AdminSettingsIndexRoute
 }
 export interface FileRouteTypes {
@@ -95,6 +110,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/admin/'
     | '/api/auth/$'
+    | '/admin/customers/'
     | '/admin/settings/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -103,22 +119,25 @@ export interface FileRouteTypes {
     | '/register'
     | '/admin'
     | '/api/auth/$'
+    | '/admin/customers'
     | '/admin/settings'
   id:
     | '__root__'
-    | '/'
     | '/_auth'
+    | '/_frontend'
     | '/admin'
     | '/_auth/login'
     | '/_auth/register'
+    | '/_frontend/'
     | '/admin/'
     | '/api/auth/$'
+    | '/admin/customers/'
     | '/admin/settings/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
+  FrontendRouteRoute: typeof FrontendRouteRouteWithChildren
   AdminRouteRoute: typeof AdminRouteRouteWithChildren
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
@@ -132,18 +151,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_frontend': {
+      id: '/_frontend'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof FrontendRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_auth': {
       id: '/_auth'
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof AuthRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/': {
@@ -152,6 +171,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRouteRoute
+    }
+    '/_frontend/': {
+      id: '/_frontend/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof FrontendIndexRouteImport
+      parentRoute: typeof FrontendRouteRoute
     }
     '/_auth/register': {
       id: '/_auth/register'
@@ -172,6 +198,13 @@ declare module '@tanstack/react-router' {
       path: '/settings'
       fullPath: '/admin/settings/'
       preLoaderRoute: typeof AdminSettingsIndexRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/customers/': {
+      id: '/admin/customers/'
+      path: '/customers'
+      fullPath: '/admin/customers/'
+      preLoaderRoute: typeof AdminCustomersIndexRouteImport
       parentRoute: typeof AdminRouteRoute
     }
     '/api/auth/$': {
@@ -198,13 +231,27 @@ const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
   AuthRouteRouteChildren,
 )
 
+interface FrontendRouteRouteChildren {
+  FrontendIndexRoute: typeof FrontendIndexRoute
+}
+
+const FrontendRouteRouteChildren: FrontendRouteRouteChildren = {
+  FrontendIndexRoute: FrontendIndexRoute,
+}
+
+const FrontendRouteRouteWithChildren = FrontendRouteRoute._addFileChildren(
+  FrontendRouteRouteChildren,
+)
+
 interface AdminRouteRouteChildren {
   AdminIndexRoute: typeof AdminIndexRoute
+  AdminCustomersIndexRoute: typeof AdminCustomersIndexRoute
   AdminSettingsIndexRoute: typeof AdminSettingsIndexRoute
 }
 
 const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminIndexRoute: AdminIndexRoute,
+  AdminCustomersIndexRoute: AdminCustomersIndexRoute,
   AdminSettingsIndexRoute: AdminSettingsIndexRoute,
 }
 
@@ -213,8 +260,8 @@ const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
 )
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
   AuthRouteRoute: AuthRouteRouteWithChildren,
+  FrontendRouteRoute: FrontendRouteRouteWithChildren,
   AdminRouteRoute: AdminRouteRouteWithChildren,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
 }

@@ -3,10 +3,13 @@ import { Button } from '#/components/ui/button'
 import { Card, CardHeader, CardTitle, CardDescription, CardAction, CardContent, CardFooter } from '#/components/ui/card'
 import { Input } from '#/components/ui/input'
 import { Label } from '#/components/ui/label'
+import { Spinner } from '#/components/ui/spinner'
 import { authClient } from '#/lib/auth-client'
 import { useForm } from '@tanstack/react-form'
-import { Link } from '@tanstack/react-router'
+import { Link, useRouter } from '@tanstack/react-router'
 import { createFileRoute } from '@tanstack/react-router'
+import { TriangleAlert } from 'lucide-react'
+import { useState } from 'react'
 import { z } from 'zod'
 
 export const Route = createFileRoute('/_auth/register')({
@@ -14,6 +17,9 @@ export const Route = createFileRoute('/_auth/register')({
 })
 
 function RouteComponent() {
+
+  const router = useRouter()
+  const [errorMsg, setErrorMsg] = useState('')
 
   const form = useForm({
     defaultValues: {
@@ -23,21 +29,27 @@ function RouteComponent() {
       confirmPassword: '',
     },
     onSubmit: async ({ value }) => {
-      await authClient.signUp.email({
-        name: value.name,
-        email: value.email,
-        password: value.password,
-      })
+        await authClient.signUp.email({
+          name: value.name,
+          email: value.email,
+          password: value.password,
+          callbackURL: '/admin'
+        }, {
+          onRequest: (ctx) =>{
+            setErrorMsg('')
+          },
+          onSuccess: (ctx)=>{
+            router.navigate({ to: "/admin" });
+          },
+          onError: (ctx) => {
+            setErrorMsg(ctx.error.message)
+          }
+        })
     },
   })
 
   return (
     <Card className="w-full max-w-sm">
-      <form onSubmit={(e) => {
-        e.preventDefault()
-        e.stopPropagation()
-        form.handleSubmit()
-      }}>
         <CardHeader>
           <CardTitle>Register</CardTitle>
           <CardDescription>
@@ -47,6 +59,11 @@ function RouteComponent() {
             <Link to="/login"><Button variant="link">Login</Button></Link>
           </CardAction>
         </CardHeader>
+      <form onSubmit={(e) => {
+        e.preventDefault()
+        e.stopPropagation()
+        form.handleSubmit()
+      }}>
         <CardContent>
           <div className="flex flex-col gap-6">
             <div className="grid gap-2">
@@ -150,10 +167,14 @@ function RouteComponent() {
               />
             </div>
           </div>
+          {errorMsg && errorMsg.length > 0 && (
+            <p className="text-sm text-destructive mt-4 flex gap-2 items-center flex-wrap"><TriangleAlert size={12} />{ errorMsg }</p>
+          )}
         </CardContent>
         <CardFooter className="flex-col gap-2 mt-8">
           <Button type="submit" className="w-full">
             Register
+            { form.state.isSubmitting && <Spinner data-icon="inline-start" />}
           </Button>
         </CardFooter>
       </form>

@@ -1,5 +1,5 @@
 import type { User } from "#/types/user";
-import { ChevronsUpDown, LogOut, Settings } from "lucide-react";
+import { ChevronsUpDown, Home, LogOut, Settings } from "lucide-react";
 import { Button } from "./ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
 import { Link, useRouter } from "@tanstack/react-router";
@@ -15,7 +15,7 @@ export default function UserMenu( { user, onNavigate } : { user: User; onNavigat
         setOpen(false);
         onNavigate?.();
         await authClient.signOut();
-        router.navigate({ to: "/login" });
+        router.navigate({ to: "/" });
     }
 
     function handleNavigate() {
@@ -44,6 +44,11 @@ export default function UserMenu( { user, onNavigate } : { user: User; onNavigat
                     </div>
                 </DropdownMenuGroup>
                 <DropdownMenuGroup className="mt-2">
+                    <DropdownMenuItem asChild>
+                        <Link to="/admin" onClick={handleNavigate} className="flex items-center gap-2 cursor-pointer">
+                            <Home className="size-4" />Dashbaord
+                        </Link>
+                    </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                         <Link to="/admin/settings" onClick={handleNavigate} className="flex items-center gap-2 cursor-pointer">
                             <Settings className="size-4" />Settings

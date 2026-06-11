@@ -8,6 +8,27 @@
       "when": 1780859089371,
       "tag": "0000_nifty_maginty",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1780976773440,
+      "tag": "0001_talented_shinobi_shaw",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1780978955705,
+      "tag": "0002_parallel_wind_dancer",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1780980869444,
+      "tag": "0003_whole_terrax",
+      "breakpoints": true
     }
   ]
 }

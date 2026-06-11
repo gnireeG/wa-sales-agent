@@ -2,6 +2,7 @@ import {
   HeadContent,
   Scripts,
   createRootRouteWithContext,
+  redirect,
 } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
@@ -10,14 +11,29 @@ import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
 
 import appCss from '../styles.css?url'
 
-import type { QueryClient } from '@tanstack/react-query'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { TooltipProvider } from '#/components/ui/tooltip'
+
+import { getSession } from '@/lib/auth.functions'
 
 interface MyRouterContext {
   queryClient: QueryClient
 }
 
+const queryClient = new QueryClient()
+
 export const Route = createRootRouteWithContext<MyRouterContext>()({
+  beforeLoad: async ({ context }) => {
+    const session = await context.queryClient.fetchQuery({
+      queryKey: ['session'],
+      queryFn: () => getSession(),
+      staleTime: 30_000,
+    });
+
+    const user = session ? session.user : null;
+
+    return { user, session };
+  },
   head: () => ({
     meta: [
       {
@@ -42,6 +58,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 })
 
 function RootDocument({ children }: { children: React.ReactNode }) {
+
   return (
     <html lang="en" suppressHydrationWarning >
       <head suppressHydrationWarning>
@@ -49,7 +66,9 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body suppressHydrationWarning>
         <TooltipProvider>
-          {children}
+          <QueryClientProvider client={queryClient}>
+            {children}
+          </QueryClientProvider>
         </TooltipProvider>
         <TanStackDevtools
           config={{

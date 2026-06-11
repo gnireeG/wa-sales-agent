@@ -12,7 +12,7 @@ import {
 import UserMenu from "@/components/user-menu"
 import type { User } from "#/types/user"
 import type { LinkProps } from "@tanstack/react-router";
-import { Edit3Icon, HomeIcon, LocateIcon, Settings } from "lucide-react";
+import { Edit3Icon, HomeIcon, LocateIcon, PersonStanding, Settings } from "lucide-react";
 import MenuButton from "./menu-button";
 
 type NavLink = {
@@ -34,7 +34,7 @@ const settingsLinks: NavLink[] = [
     },
 ]
 
-export function AppSidebar({ user } : { user: User }) {
+export function AppSidebar({ user } : { user: User | null }) {
   const { setOpenMobile } = useSidebar();
 
   return (
@@ -47,7 +47,7 @@ export function AppSidebar({ user } : { user: User }) {
             <SidebarGroupContent>
                 <SidebarMenu>
                     <MenuButton href="/admin" icon={<HomeIcon />} label="Dashboard" />
-                    <MenuButton href="/admin" icon={<Edit3Icon />} label="Menu Editor" />
+                    <MenuButton href="/admin/customers" icon={<PersonStanding />} label="Customers" />
                 </SidebarMenu>
             </SidebarGroupContent>
         </SidebarGroup>
@@ -63,7 +63,7 @@ export function AppSidebar({ user } : { user: User }) {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        <UserMenu user={ user } onNavigate={() => setOpenMobile(false)} />
+        { user && <UserMenu user={ user } onNavigate={() => setOpenMobile(false)} /> }
       </SidebarFooter>
     </Sidebar>
   )
