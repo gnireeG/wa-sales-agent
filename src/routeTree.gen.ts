@@ -16,9 +16,11 @@ import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as FrontendIndexRouteImport } from './routes/_frontend/index'
 import { Route as AuthRegisterRouteImport } from './routes/_auth/register'
 import { Route as AuthLoginRouteImport } from './routes/_auth/login'
+import { Route as AdminCustomersRouteRouteImport } from './routes/admin/customers/route'
 import { Route as AdminSettingsIndexRouteImport } from './routes/admin/settings/index'
 import { Route as AdminCustomersIndexRouteImport } from './routes/admin/customers/index'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as AdminCustomersIdRouteImport } from './routes/admin/customers/$id'
 
 const AdminRouteRoute = AdminRouteRouteImport.update({
   id: '/admin',
@@ -53,28 +55,40 @@ const AuthLoginRoute = AuthLoginRouteImport.update({
   path: '/login',
   getParentRoute: () => AuthRouteRoute,
 } as any)
+const AdminCustomersRouteRoute = AdminCustomersRouteRouteImport.update({
+  id: '/customers',
+  path: '/customers',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const AdminSettingsIndexRoute = AdminSettingsIndexRouteImport.update({
   id: '/settings/',
   path: '/settings/',
   getParentRoute: () => AdminRouteRoute,
 } as any)
 const AdminCustomersIndexRoute = AdminCustomersIndexRouteImport.update({
-  id: '/customers/',
-  path: '/customers/',
-  getParentRoute: () => AdminRouteRoute,
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminCustomersRouteRoute,
 } as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminCustomersIdRoute = AdminCustomersIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AdminCustomersRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof FrontendIndexRoute
   '/admin': typeof AdminRouteRouteWithChildren
+  '/admin/customers': typeof AdminCustomersRouteRouteWithChildren
   '/login': typeof AuthLoginRoute
   '/register': typeof AuthRegisterRoute
   '/admin/': typeof AdminIndexRoute
+  '/admin/customers/$id': typeof AdminCustomersIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/admin/customers/': typeof AdminCustomersIndexRoute
   '/admin/settings/': typeof AdminSettingsIndexRoute
@@ -84,6 +98,7 @@ export interface FileRoutesByTo {
   '/login': typeof AuthLoginRoute
   '/register': typeof AuthRegisterRoute
   '/admin': typeof AdminIndexRoute
+  '/admin/customers/$id': typeof AdminCustomersIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/admin/customers': typeof AdminCustomersIndexRoute
   '/admin/settings': typeof AdminSettingsIndexRoute
@@ -93,10 +108,12 @@ export interface FileRoutesById {
   '/_auth': typeof AuthRouteRouteWithChildren
   '/_frontend': typeof FrontendRouteRouteWithChildren
   '/admin': typeof AdminRouteRouteWithChildren
+  '/admin/customers': typeof AdminCustomersRouteRouteWithChildren
   '/_auth/login': typeof AuthLoginRoute
   '/_auth/register': typeof AuthRegisterRoute
   '/_frontend/': typeof FrontendIndexRoute
   '/admin/': typeof AdminIndexRoute
+  '/admin/customers/$id': typeof AdminCustomersIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/admin/customers/': typeof AdminCustomersIndexRoute
   '/admin/settings/': typeof AdminSettingsIndexRoute
@@ -106,9 +123,11 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
+    | '/admin/customers'
     | '/login'
     | '/register'
     | '/admin/'
+    | '/admin/customers/$id'
     | '/api/auth/$'
     | '/admin/customers/'
     | '/admin/settings/'
@@ -118,6 +137,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/admin'
+    | '/admin/customers/$id'
     | '/api/auth/$'
     | '/admin/customers'
     | '/admin/settings'
@@ -126,10 +146,12 @@ export interface FileRouteTypes {
     | '/_auth'
     | '/_frontend'
     | '/admin'
+    | '/admin/customers'
     | '/_auth/login'
     | '/_auth/register'
     | '/_frontend/'
     | '/admin/'
+    | '/admin/customers/$id'
     | '/api/auth/$'
     | '/admin/customers/'
     | '/admin/settings/'
@@ -193,6 +215,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLoginRouteImport
       parentRoute: typeof AuthRouteRoute
     }
+    '/admin/customers': {
+      id: '/admin/customers'
+      path: '/customers'
+      fullPath: '/admin/customers'
+      preLoaderRoute: typeof AdminCustomersRouteRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/admin/settings/': {
       id: '/admin/settings/'
       path: '/settings'
@@ -202,10 +231,10 @@ declare module '@tanstack/react-router' {
     }
     '/admin/customers/': {
       id: '/admin/customers/'
-      path: '/customers'
+      path: '/'
       fullPath: '/admin/customers/'
       preLoaderRoute: typeof AdminCustomersIndexRouteImport
-      parentRoute: typeof AdminRouteRoute
+      parentRoute: typeof AdminCustomersRouteRoute
     }
     '/api/auth/$': {
       id: '/api/auth/$'
@@ -213,6 +242,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/auth/$'
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/admin/customers/$id': {
+      id: '/admin/customers/$id'
+      path: '/$id'
+      fullPath: '/admin/customers/$id'
+      preLoaderRoute: typeof AdminCustomersIdRouteImport
+      parentRoute: typeof AdminCustomersRouteRoute
     }
   }
 }
@@ -243,15 +279,28 @@ const FrontendRouteRouteWithChildren = FrontendRouteRoute._addFileChildren(
   FrontendRouteRouteChildren,
 )
 
-interface AdminRouteRouteChildren {
-  AdminIndexRoute: typeof AdminIndexRoute
+interface AdminCustomersRouteRouteChildren {
+  AdminCustomersIdRoute: typeof AdminCustomersIdRoute
   AdminCustomersIndexRoute: typeof AdminCustomersIndexRoute
+}
+
+const AdminCustomersRouteRouteChildren: AdminCustomersRouteRouteChildren = {
+  AdminCustomersIdRoute: AdminCustomersIdRoute,
+  AdminCustomersIndexRoute: AdminCustomersIndexRoute,
+}
+
+const AdminCustomersRouteRouteWithChildren =
+  AdminCustomersRouteRoute._addFileChildren(AdminCustomersRouteRouteChildren)
+
+interface AdminRouteRouteChildren {
+  AdminCustomersRouteRoute: typeof AdminCustomersRouteRouteWithChildren
+  AdminIndexRoute: typeof AdminIndexRoute
   AdminSettingsIndexRoute: typeof AdminSettingsIndexRoute
 }
 
 const AdminRouteRouteChildren: AdminRouteRouteChildren = {
+  AdminCustomersRouteRoute: AdminCustomersRouteRouteWithChildren,
   AdminIndexRoute: AdminIndexRoute,
-  AdminCustomersIndexRoute: AdminCustomersIndexRoute,
   AdminSettingsIndexRoute: AdminSettingsIndexRoute,
 }
 

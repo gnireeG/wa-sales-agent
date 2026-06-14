@@ -29,6 +29,27 @@
       "when": 1780980869444,
       "tag": "0003_whole_terrax",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1781151113354,
+      "tag": "0004_perfect_blizzard",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1781290684865,
+      "tag": "0005_lively_vapor",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1781292140929,
+      "tag": "0006_solid_forge",
+      "breakpoints": true
     }
   ]
 }

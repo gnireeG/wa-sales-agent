@@ -2,7 +2,6 @@ import {
   HeadContent,
   Scripts,
   createRootRouteWithContext,
-  redirect,
 } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
@@ -11,16 +10,46 @@ import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
 
 import appCss from '../styles.css?url'
 
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { MutationCache, QueryClient, QueryClientProvider, type QueryKey } from '@tanstack/react-query'
 import { TooltipProvider } from '#/components/ui/tooltip'
 
 import { getSession } from '@/lib/auth.functions'
+import { Toaster } from '#/components/ui/sonner'
+import { toast } from 'sonner'
+
+declare module "@tanstack/react-query"{
+  interface Register {
+    mutationMeta: {
+      invalidates?: QueryKey,
+      successMessage?: string,
+      errorMessage?: string
+    }
+  }
+}
 
 interface MyRouterContext {
   queryClient: QueryClient
 }
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({
+  mutationCache: new MutationCache({
+    onSuccess: (_data, _variables, _onMutateResult, mutation) => {
+      if(mutation.meta?.successMessage){
+        toast.success(mutation.meta.successMessage)
+      }
+    },
+    onError: (_data, _variables, _onMutateResult, mutation) => {
+      if(mutation.meta?.errorMessage){
+        toast.error(mutation.meta.errorMessage)
+      }
+    },
+    onSettled: (_data, _error, _variables, _onMutateResult, mutation) => {
+      if(mutation.meta?.invalidates){
+        queryClient.invalidateQueries({ queryKey: mutation.meta.invalidates })
+      }
+    }
+  })
+})
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
   beforeLoad: async ({ context }) => {
@@ -68,6 +97,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <TooltipProvider>
           <QueryClientProvider client={queryClient}>
             {children}
+            <Toaster />
           </QueryClientProvider>
         </TooltipProvider>
         <TanStackDevtools
