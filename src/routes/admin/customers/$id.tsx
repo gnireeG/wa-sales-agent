@@ -11,7 +11,6 @@ import { useForm } from '@tanstack/react-form'
 import { useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 import Chat from '#/components/chat'
-import { Phone } from 'lucide-react'
 
 export const Route = createFileRoute('/admin/customers/$id')({
   loader: ({context: {queryClient}, params}) =>{

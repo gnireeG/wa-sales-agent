@@ -1,7 +1,7 @@
 import { messageRoleEnum } from "#/db/schema";
 import type { getChatsForCustomerQuery } from "#/features/customer/customer.queries";
 import type { MessageRole } from "#/features/customer/customer.schema";
-import { Dot, PhoneCall, PhoneIcon, Send, User } from "lucide-react";
+import { Dot, PhoneIcon, Send, User } from "lucide-react";
 import { Button } from "./ui/button";
 import { InputGroup, InputGroupAddon, InputGroupTextarea } from "./ui/input-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";

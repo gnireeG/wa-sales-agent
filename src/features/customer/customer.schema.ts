@@ -1,4 +1,3 @@
-import { message } from "#/db/schema";
 import { z } from "zod";
 
 // ─── Enums ────────────────────────────────────────────────────────────────────

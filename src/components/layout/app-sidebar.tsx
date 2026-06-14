@@ -12,7 +12,7 @@ import {
 import UserMenu from "@/components/user-menu"
 import type { User } from "#/types/user"
 import type { LinkProps } from "@tanstack/react-router";
-import { Edit3Icon, HomeIcon, LocateIcon, PersonStanding, Settings } from "lucide-react";
+import { HomeIcon, LocateIcon, PersonStanding, Settings } from "lucide-react";
 import MenuButton from "./menu-button";
 
 type NavLink = {

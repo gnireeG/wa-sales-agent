@@ -1,4 +1,4 @@
-import { asc, count, eq, ilike } from "drizzle-orm";
+import { count, eq, ilike } from "drizzle-orm";
 import { db } from "#/db/index";
 import { chat, customer, message } from "#/db/schema";
 import type { CreateChatInput, CreateCustomerInput, CreateMessageInput, CustomerQueryOptions, UpdateCustomerInput } from "./customer.schema";
